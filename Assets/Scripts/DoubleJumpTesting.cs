@@ -7,9 +7,11 @@ public class DoubleJumpTesting : MonoBehaviour
 {
     public AudioSource coinAudioSource;
     public float walkSpeed = 8f;
-    public float jumpSpeed = 4f;
+    public float jumpSpeed = 10f;
     bool touchingWallLeft = false;
     bool touchingWallRight = false;
+    bool jumpedRight = false;
+    bool jumpedLeft = false;
     float wallTouchRadius = 0.3f;
 
     // access the HUD
@@ -37,6 +39,9 @@ public class DoubleJumpTesting : MonoBehaviour
         hud.Refresh();
     }
 
+
+
+
     // Update is called once per frame
     void Update()
     {
@@ -45,6 +50,8 @@ public class DoubleJumpTesting : MonoBehaviour
 
         //Handle player jumping
         JumpHandler();
+
+
     }
 
     // Make the player walk according to user input
@@ -88,23 +95,39 @@ public class DoubleJumpTesting : MonoBehaviour
         touchingWallLeft = (Physics.Raycast(transform.position, Vector3.left, wallTouchRadius));
         touchingWallRight = (Physics.Raycast(transform.position, Vector3.right, wallTouchRadius));
 
-        if (touchingWallLeft || touchingWallRight)
-            jumpSpeed = 7f;
+
 
         // Check if the player is pressing the jump key
         if (jAxis > 0f)
         {
             // Make sure we've not already jumped on this key press
-            if (!pressedJump && (isGrounded || touchingWallLeft || touchingWallRight))
+            if (!pressedJump && (isGrounded || (touchingWallLeft && !jumpedLeft) || (touchingWallRight && !jumpedRight)))
             {
                 // We are jumping on the current key press
                 pressedJump = true;
+
+                //if the player just wall jumped, the player cannot jump on that same wall
+                if (touchingWallLeft)
+                {
+                    jumpedLeft = true;
+                    jumpedRight = false;
+                }
+                if (touchingWallRight)
+                {
+                    jumpedRight = true;
+                    jumpedLeft = false;
+                }
+                if (isGrounded)
+                {
+                    jumpedRight = false;
+                    jumpedLeft = false;
+                }
 
                 // Jumping vector
                 Vector3 jumpVector = new Vector3(0f, jumpSpeed, 0f);
 
                 // Make the player jump by adding velocity
-                rb.velocity = rb.velocity + jumpVector;
+                rb.velocity = jumpVector;
             }
         }
         else
@@ -130,10 +153,10 @@ public class DoubleJumpTesting : MonoBehaviour
         Vector3 corner4 = transform.position + new Vector3(-sizeX / 2, -sizeY / 2 + 0.01f, -sizeZ / 2);
 
         // Send a short ray down the cube on all 4 corners to detect ground
-        bool grounded1 = Physics.Raycast(corner1, new Vector3(0, -1, 0), 0.01f);
-        bool grounded2 = Physics.Raycast(corner2, new Vector3(0, -1, 0), 0.01f);
-        bool grounded3 = Physics.Raycast(corner3, new Vector3(0, -1, 0), 0.01f);
-        bool grounded4 = Physics.Raycast(corner4, new Vector3(0, -1, 0), 0.01f);
+        bool grounded1 = Physics.Raycast(corner1, new Vector3(0, -1, 0), 0.1f);
+        bool grounded2 = Physics.Raycast(corner2, new Vector3(0, -1, 0), 0.1f);
+        bool grounded3 = Physics.Raycast(corner3, new Vector3(0, -1, 0), 0.1f);
+        bool grounded4 = Physics.Raycast(corner4, new Vector3(0, -1, 0), 0.1f);
 
         // If the bottom is touching the floor
         return (grounded1);
