@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour
     public AudioSource coinAudioSource;
     public float walkSpeed = 8f;
     public float jumpSpeed = 8f;
+    public float runMultiplier = 1.5f;
 
-    public float movementSpeed = 10;
+    //public float movementSpeed = 10;
 
     public bool limitDiagonalSpeed = true;
 
@@ -80,6 +81,11 @@ public class PlayerController : MonoBehaviour
 
         //// Distance ( speed = distance / time --> distance = speed * time)
         float distance = walkSpeed * Time.deltaTime;
+
+        if (CheckGrounded() && Input.GetButton("Run"))
+        {
+            distance *= runMultiplier;
+        }
 
         //// Input on x ("Horizontal")
         float hAxis = Input.GetAxis("Horizontal");

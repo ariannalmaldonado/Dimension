@@ -1224,7 +1224,7 @@ MonoBehaviour:
   coinAudioSource: {fileID: 0}
   walkSpeed: 8
   jumpSpeed: 7
-  movementSpeed: 10
+  runMultiplier: 1.5
   limitDiagonalSpeed: 1
   touchingWallLeft: 0
   touchingWallRight: 0
