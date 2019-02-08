@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerController : MonoBehaviour
+public class RigidMovementTest : MonoBehaviour
 {
     public AudioSource coinAudioSource;
     public float walkSpeed = 8f;
     public float jumpSpeed = 7f;
 
     public float movementSpeed = 10;
-    public float turningSpeed = 60;
+  //  public float turningSpeed = 60;
+
+    public bool limitDiagonalSpeed = true;
 
     // access the HUD
     public HudManager hud;
@@ -50,29 +52,57 @@ public class PlayerController : MonoBehaviour
     // Make the player walk according to user input
     void WalkHandler()
     {
-        // Set x and z velocities to zero
-        rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        //// Set x and z velocities to zero
+        //rb.velocity = new Vector3(0, rb.velocity.y, 0);
 
-        // Distance ( speed = distance / time --> distance = speed * time)
+        //// Distance ( speed = distance / time --> distance = speed * time)
         float distance = walkSpeed * Time.deltaTime;
 
-        // Input on x ("Horizontal")
-        float hAxis = Input.GetAxis("Horizontal") * turningSpeed * Time.deltaTime;
+        //// Input on x ("Horizontal")
+        float hAxis = Input.GetAxis("Horizontal");
 
-        // Input on z ("Vertical")
-        float vAxis = Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime;
+        //// Input on z ("Vertical")
+        float vAxis = Input.GetAxis("Vertical");
 
-        // Movement vector
+        // inputModifyFactor = (hAxis != 0.0f && vAxis != 0.0f && limitDiagonalSpeed) ? 0.6701f : 1.0f;
+
+        //// Movement vector
         Vector3 movement = new Vector3(hAxis * distance, 0f, vAxis * distance);
 
-        // Current position
+        //moveDirection = new Vector3(hAxis * distance, 0, vAxis * distance);
+        movement = transform.TransformDirection(movement);
+
+
+        //// Current position
         Vector3 currPosition = transform.position;
 
-        // New position
+        //// New position
         Vector3 newPosition = currPosition + movement;
 
-        // Move the rigid body
+        //// Move the rigid body
         rb.MovePosition(newPosition);
+        //if (Input.GetKey(KeyCode.W))
+        //{
+        //    //Move the Rigidbody forwards constantly at speed you define (the blue arrow axis in Scene view)
+        //    rb.velocity = transform.forward * walkSpeed;
+        //}
+
+        //if (Input.GetKey(KeyCode.S))
+        //{
+        //    //Move the Rigidbody backwards constantly at the speed you define (the blue arrow axis in Scene view)
+        //    rb.velocity = -transform.forward * walkSpeed;
+        //}
+        //if (Input.GetKey(KeyCode.A))
+        //{
+        //    //Move the Rigidbody forwards constantly at speed you define (the blue arrow axis in Scene view)
+        //    rb.velocity = -transform.right * walkSpeed;
+        //}
+
+        //if (Input.GetKey(KeyCode.D))
+        //{
+        //    //Move the Rigidbody backwards constantly at the speed you define (the blue arrow axis in Scene view)
+        //    rb.velocity = transform.right * walkSpeed;
+        //}
     }
 
     // Check whether the player can jump and make it jump
