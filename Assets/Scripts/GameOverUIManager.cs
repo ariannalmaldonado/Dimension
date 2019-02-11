@@ -11,6 +11,7 @@ public class GameOverUIManager : MonoBehaviour {
     // Where the high score value will be shown
     public Text highScore;
 
+
     // Run on the first frame
     void Start()
     {
